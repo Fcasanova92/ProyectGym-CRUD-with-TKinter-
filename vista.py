@@ -202,7 +202,7 @@ class INTERFAZ:
         entrada_dni.place(x=110, y=45, width = "250", height="40")
 
 
-        botton_entry_dni = tk.Button(Frame2, text= "OK", font=("Rockwell", 15), relief="sunken", borderwidth="10", bg="ivory3", foreground="black")
+        botton_entry_dni = tk.Button(Frame2, text= "OK", font=("Rockwell", 15), relief="sunken", borderwidth="10", bg="ivory3", foreground="black", command = self.controller.view_alumno)
 
         botton_entry_dni.place(x=380, y=45, width=50, height=40)
 

@@ -35,6 +35,10 @@ class MODEL:
 
     def ACTUALIZAR(self, id, data):
 
+        self.conexion = sqlite3.connect("Base de datos Alumnos Gym")
+
+        self.cursor = self.conexion.cursor()
+
         self.cursor.execute("UPDATE ALUMNOS SET NOMBRE=?, APELLIDO=?, TELEFONO=?, EMAIL= ?, FECHA=? , RUTINA = ? WHERE DNI =" + id,(data))
 
         self.conexion.commit()
@@ -45,7 +49,9 @@ class MODEL:
     
     def BORRAR(self, id):
 
-        # el self.dni.get se tiene que obtener por un getter proveniende del objeto interfaz
+        self.conexion = sqlite3.connect("Base de datos Alumnos Gym")
+
+        self.cursor = self.conexion.cursor()
 
         self.cursor.execute("DELETE FROM ALUMNOS WHERE DNI =" + id)
 
@@ -56,9 +62,13 @@ class MODEL:
 
 # este metodo muestra los datos cuando el alumno indica el dni para saber si puede ingresar o no al gimnasio
 
-    def VIEW_ALUMNO(self, id2):
+    def VIEW_ALUMNO(self, id):
 
-        self.cursor.execute("SELECT NOMBRE, APELLIDO, FECHA, RUTINA FROM ALUMNOS WHERE DNI =" + id2)
+        self.conexion = sqlite3.connect("Base de datos Alumnos Gym")
+
+        self.cursor = self.conexion.cursor()
+
+        self.cursor.execute("SELECT NOMBRE, APELLIDO, FECHA, RUTINA FROM ALUMNOS WHERE DNI =" + id)
 
         self.data_view_datos=self.cursor.fetchall()
 
@@ -67,23 +77,4 @@ class MODEL:
         return  self.data_view_datos
 
 
-
-# estas lineas de codigo van en el controlador, donde se visualizara
-#la informacion en la ventana principal
-
-
- #  for i in view_datos:
-            
-#  #          self.nombre_bienvenida.set(i[0] + " " + i[1])
-
-  #          fecha_pago = i[2]
-
- #           self.rutina_bienvenida.set(i[3])
-
-#
-    #    fecha_pago = datetime.strptime(fecha_pago, "%Y-%m-%d")
-#
-    #   self.fecha_vencimiento = fecha_pago + timedelta(days=30)
-#
-     #   self.vencimiento.set(self.fecha_vencimiento)
 #

@@ -9,6 +9,8 @@ import tkinter as tk
 
 from tkinter import messagebox as ms
 
+from datetime import datetime, timedelta
+
 import re
 
 
@@ -32,27 +34,30 @@ class controller:
           
      def agregar_alumno(self):
 
-          dato_alumno = [self.vista.gestion.DNI.get(), self.vista.gestion.nombre.get(), self.vista.gestion.apellido.get(), self.vista.gestion.email.get(), 
-          
-          self.vista.gestion.telefono.get(), self.vista.gestion.pago.get(), self.vista.gestion.rutina.get()]
+          try:
 
-          if len(dato_alumno) == 7:
+               dato_alumno = [self.vista.gestion.DNI.get(), self.vista.gestion.nombre.get(), self.vista.gestion.apellido.get(), self.vista.gestion.email.get(), 
+               
+               self.vista.gestion.telefono.get(), self.vista.gestion.pago.get(), self.vista.gestion.rutina.get()]
 
                self.model.AGREGAR(dato_alumno)
 
-               ms.showwarning(" Alerta ", " Alumno Agregado ")
+               ms.showwarning("Alerta", "Alumno Agregado")
 
                self.set_field()
 
-          else:
-               ms.showwarning(" Alerta ", " Algunos campos estan vacios ")
+          except:
+
+               ms.showwarning("Alerta", " El alumno ya se encuentra inscripto")
 
 
 
      def buscar_alumno(self):
 
           try:
-               dato_alumno = self.model.BUSCAR(self.vista.gestion.DNI.get())
+               id = self.vista.gestion.DNI.get()
+
+               dato_alumno = self.model.BUSCAR(id)
 
                for dato in dato_alumno:
 
@@ -68,9 +73,6 @@ class controller:
                     
                     self.vista.gestion.rutina.set(dato[5])
 
-               self.set_field()
-
-
           except:
 
                ms.showwarning(" Alerta ", " Numero de DNI inexistente ")
@@ -82,7 +84,7 @@ class controller:
 
                dato_alumno = [self.vista.gestion.nombre.get(), self.vista.gestion.apellido.get(), self.vista.gestion.email.get(), 
                
-               self.vista.gestion.telefono.get(), self.vista.gestion.entry_pago.entry.get(), self.vista.gestion.rutina.get()] 
+               self.vista.gestion.telefono.get(), self.vista.gestion.pago.get(), self.vista.gestion.rutina.get()] 
 
                id = self.vista.gestion.DNI.get()
 
@@ -115,8 +117,27 @@ class controller:
                ms.showwarning(" Alerta ", " Numero de Dni inexistente")
 
 
-     
+     def view_alumno(self):
+
+          data =  self.model.VIEW_ALUMNO()
+
+          for i in data:
+                         
+               self.vista.nombre_bienvenida.set(i[0] + " " + i[1])
+
+               fecha_pago = i[2]
+
+               self.vista.rutina_bienvenida.set(i[3])
+
+          fecha_pago = datetime.strptime(fecha_pago, "%d/%m/%Y") + timedelta(days=30)
+
+          self.vista.vencimiento.set(fecha_pago)
+
+
+
      def set_field(self):
+
+          self.vista.gestion.DNI.set(" ")
 
           self.vista.gestion.nombre.set(" ")
                     
@@ -192,16 +213,34 @@ class controller:
 
           return all(checks)
           
-         
-c = controller()
 
+     def view_alumno(self):
 
+          try:
+               id = self.vista.dni_entry.get()
 
+               data = self.model.VIEW_ALUMNO(id)
 
+               for i in data:
 
+                    self.vista.nombre_bienvenida.set(i[0] + " " + i[1])
 
+                    fecha_pago = i[2]
 
+                    self.vista.rutina_bienvenida.set(i[3])
 
+               self.fecha_vencimiento = datetime.strptime(fecha_pago, "%d/%m/%Y") + timedelta(days=30)
 
+               self.dias_suscrip = round((self.fecha_vencimiento - datetime.today()).total_seconds()/86400)
+
+               self.vista.dias_vencimiento.set(self.dias_suscrip)
+
+               self.vista.vencimiento.set(self.fecha_vencimiento)
+
+               ms.showinfo("Tugym", "Bienvenido")
+
+          except:
+
+               ms.showerror("Alerta", " No es alumno inscripto en el establecimiento")
 
 
